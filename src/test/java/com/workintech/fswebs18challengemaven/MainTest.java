@@ -3,13 +3,11 @@ package com.workintech.fswebs18challengemaven;
 import com.workintech.fswebs18challengemaven.entity.Card;
 import com.workintech.fswebs18challengemaven.entity.Color;
 import com.workintech.fswebs18challengemaven.entity.Type;
-import com.workintech.fswebs18challengemaven.exceptions.CardErrorResponse;
-import com.workintech.fswebs18challengemaven.exceptions.CardException;
+import com.workintech.fswebs18challengemaven.exceptions.CardNotFoundException;
 import com.workintech.fswebs18challengemaven.repository.CardRepository;
 import com.workintech.fswebs18challengemaven.repository.CardRepositoryImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -128,7 +126,7 @@ public class MainTest {
 
         when(query.getResultList()).thenReturn(new ArrayList<>());
 
-        assertThrows(CardException.class, () -> cardRepository.findByColor("HEARTH"));
+        assertThrows(CardNotFoundException.class, () -> cardRepository.findByColor("HEARTH"));
     }
 
     @Test
@@ -198,7 +196,7 @@ public class MainTest {
     @Test
     void testCardRepositoryErrorResponse() {
         String expectedMessage = "An error occurred";
-        CardErrorResponse errorResponse = new CardErrorResponse(expectedMessage);
+        CardNotFoundException errorResponse = new CardNotFoundException(expectedMessage);
         assertEquals(expectedMessage, errorResponse.getMessage(), "The retrieved message should match the expected message.");
     }
 
@@ -206,7 +204,7 @@ public class MainTest {
     void testCardExceptionCreation() {
         String expectedMessage = "Test exception message";
         HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
-        CardException exception = new CardException(expectedMessage, expectedStatus);
+        CardNotFoundException exception = new CardNotFoundException(expectedMessage, expectedStatus);
 
         assertEquals(expectedMessage, exception.getMessage(), "The exception message should match the expected value.");
         assertEquals(expectedStatus, exception.getHttpStatus(), "The HttpStatus should match the expected value.");
@@ -214,7 +212,7 @@ public class MainTest {
 
     @Test
     void testCardExceptionIsRuntimeException() {
-        CardException exception = new CardException("Test", HttpStatus.BAD_REQUEST);
+        CardNotFoundException exception = new CardNotFoundException("Test", HttpStatus.BAD_REQUEST);
         assertTrue(exception instanceof RuntimeException, "CardException should be an instance of RuntimeException.");
     }
 }
